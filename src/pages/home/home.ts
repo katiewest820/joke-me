@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { SavedPage } from '../saved/saved';
 import axios from 'axios';
+import { API_BASE_URL }  from '../../config';
 
 
 @Component({
@@ -48,11 +49,20 @@ export class HomePage {
       joke: joke,
       punchLine: punchLine
     })
-
-    this.navCtrl.push(SavedPage, {
-      savedJokes: this.savedJokes
+    let newJoke = {joke: joke, punchLine: punchLine};
+    axios.post(`${API_BASE_URL}joke/newJoke`, newJoke).then(( response) => {
+      console.log(response)
+    }).then(() => {
+      axios.get(`${API_BASE_URL}joke/getAllJokes`).then((jokes) => {
+        this.savedJokes = jokes.data.data;
+        this.navCtrl.push(SavedPage, {
+          savedJokes: this.savedJokes
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err)
     });
-    console.log(this.savedJokes)
   }
 
 }
