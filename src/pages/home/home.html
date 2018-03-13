@@ -1,17 +1,26 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Home</ion-title>
-  </ion-navbar>
+  <a class="logOutHeader">Log Out</a>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+  <h2>Life is short. <br> Smile while you still have teeth.</h2>
+  <button className="getJokeBtn" (click)="callToApiForJoke()" ion-button>Joke Me</button>
+
+  <div class="jokeDiv" *ngIf="joke" >
+    <p>{{ joke }}</p>
+    <div class="punchLineDiv" (click)="togglePunchLine()">
+      <p>See Punchline</p>
+      <ion-icon [name]="iconName"></ion-icon>
+    </div>
+    <div *ngIf="punchLineVisible">
+      <p>{{ punchLine }}</p>
+    </div>
+
+    <div>
+      <p>Like this joke? Save it!</p>
+      <div (click)="saveJoke(punchLine, joke)">
+        <ion-icon name="star"></ion-icon>
+      </div>
+    </div>
+  </div>
 </ion-content>
