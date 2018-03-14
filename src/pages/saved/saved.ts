@@ -13,10 +13,7 @@ export class SavedPage {
 
   mySavedJokes = this.navParams.get('savedJokes');
 
-
-
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-
   }
 
   ionViewWillEnter() {

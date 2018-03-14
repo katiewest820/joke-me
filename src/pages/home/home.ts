@@ -3,7 +3,8 @@ import { NavController } from 'ionic-angular';
 import { SavedPage } from '../saved/saved';
 import axios from 'axios';
 import { API_BASE_URL }  from '../../config';
-
+import { LandingPage } from '../landing/landing';
+import { App } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -16,11 +17,12 @@ export class HomePage {
   iconName = 'arrow-dropdown-circle';
   //TODO post to DB
   savedJokes = [];
-  constructor(public navCtrl: NavController) {
+  constructor(
+    public navCtrl: NavController,
+    private app: App
+    ) {
 
   }
-
-
 
   callToApiForJoke(){
     axios.get('https://08ad1pao69.execute-api.us-east-1.amazonaws.com/dev/random_joke')
@@ -33,7 +35,6 @@ export class HomePage {
         console.log(err)
       })
   }
-
 
   togglePunchLine(){
     this.punchLineVisible = !this.punchLineVisible;
@@ -63,6 +64,11 @@ export class HomePage {
     .catch((err) => {
       console.log(err)
     });
+  }
+
+  logOut(){
+    console.log('hi')
+    this.app.getRootNav().setRoot(LandingPage);
   }
 
 }
