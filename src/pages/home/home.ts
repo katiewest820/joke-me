@@ -5,6 +5,7 @@ import axios from 'axios';
 import { API_BASE_URL }  from '../../config';
 import { LandingPage } from '../landing/landing';
 import { App } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-home',
@@ -19,12 +20,15 @@ export class HomePage {
   savedJokes = [];
   constructor(
     public navCtrl: NavController,
-    private app: App
+    private app: App,
+    private storage: Storage
     ) {
 
   }
 
   callToApiForJoke(){
+    console.log(this.storage.get('token'))
+    console.log(this.storage.get('userId'))
     axios.get('https://08ad1pao69.execute-api.us-east-1.amazonaws.com/dev/random_joke')
     .then((response) => {
       console.log(response)
@@ -46,15 +50,30 @@ export class HomePage {
   }
 
   saveJoke(punchLine, joke){
-    this.savedJokes.push({
+    let token;
+    let userId;
+
+    this.storage.get('userData').then((val) => {
+
+      token = val.token;
+      userId = val.userId;
+    }).then(() => {
+      console.log(userId)
+    console.log(token)
+
+    let newJoke = {
       joke: joke,
-      punchLine: punchLine
-    })
-    let newJoke = {joke: joke, punchLine: punchLine};
-    axios.post(`${API_BASE_URL}joke/newJoke`, newJoke).then(( response) => {
+      punchLine: punchLine,
+      userId: userId,
+      token: token
+    };
+    console.log(newJoke)
+
+    axios.post(`${API_BASE_URL}joke/newJoke`, newJoke)}).then((response) => {
       console.log(response)
     }).then(() => {
-      axios.get(`${API_BASE_URL}joke/getAllJokes`).then((jokes) => {
+      console.log(userId)
+      axios.get(`${API_BASE_URL}joke/getAllJokes/${userId}`, {headers: {'authorization': token}}).then((jokes) => {
         this.savedJokes = jokes.data.data;
         this.navCtrl.push(SavedPage, {
           savedJokes: this.savedJokes
@@ -67,8 +86,9 @@ export class HomePage {
   }
 
   logOut(){
-    console.log('hi')
-    this.app.getRootNav().setRoot(LandingPage);
+    this.storage.clear().then(() => {
+      this.app.getRootNav().setRoot(LandingPage);
+    });
   }
 
 }
