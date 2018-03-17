@@ -27,8 +27,6 @@ export class HomePage {
   }
 
   callToApiForJoke(){
-    console.log(this.storage.get('token'))
-    console.log(this.storage.get('userId'))
     axios.get('https://08ad1pao69.execute-api.us-east-1.amazonaws.com/dev/random_joke')
     .then((response) => {
       console.log(response)
@@ -58,21 +56,13 @@ export class HomePage {
       token = val.token;
       userId = val.userId;
     }).then(() => {
-      console.log(userId)
-    console.log(token)
-
     let newJoke = {
       joke: joke,
       punchLine: punchLine,
       userId: userId,
       token: token
     };
-    console.log(newJoke)
-
     axios.post(`${API_BASE_URL}joke/newJoke`, newJoke)}).then((response) => {
-      console.log(response)
-    }).then(() => {
-      console.log(userId)
       axios.get(`${API_BASE_URL}joke/getAllJokes/${userId}`, {headers: {'authorization': token}}).then((jokes) => {
         this.savedJokes = jokes.data.data;
         this.navCtrl.push(SavedPage, {
